@@ -44,11 +44,19 @@ class RNNModel(nn.Module):
         self.decoder.bias.data.zero_()
         self.decoder.weight.data.uniform_(-initrange, initrange)
 
-    def forward(self, input, hidden):
+    def forward(self, input, hidden, apply_softmax=False):
         emb = self.drop(self.encoder(input))
         output, hidden = self.rnn(emb, hidden)
+        batch_size, seq_size, feat_size = output.shape
+        output = output.contiguous().view(batch_size * seq_size, feat_size)
         output = self.drop(output)
         decoded = self.decoder(output)
+
+        if apply_softmax:
+            decoded = F.softmax(decoded, dim=1)
+            
+        new_feat_size = decoded.shape[-1]
+        decoded = decoded.view(batch_size, seq_size, new_feat_size)
         return decoded, hidden
 
     def init_hidden(self, bsz):
