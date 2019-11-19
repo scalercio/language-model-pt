@@ -42,7 +42,7 @@ parser.add_argument('--cuda', action='store_true',
                     help='use CUDA')
 parser.add_argument('--log-interval', type=int, default=200, metavar='N',
                     help='report interval')
-parser.add_argument('--save', type=str, default='model_storage/model.pt',
+parser.add_argument('--save', type=str, default='model_storage/model2l.pt',
                     help='path to save the final model')
 parser.add_argument('--onnx-export', type=str, default='',
                     help='path to export the final model in onnx format')
@@ -64,7 +64,7 @@ device = torch.device("cuda" if args.cuda else "cpu")
 # Load data
 ###############################################################################
 
-with open(os.path.join(args.data, 'data2.json'), 'r') as fp:
+with open(os.path.join(args.data, 'data3.json'), 'r') as fp:
     data_dict = json.load(fp)
 corpus = data.LM_Dataset(data_dict)
 

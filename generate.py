@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser(description='PyTorch Wikitext-2 Language Model'
 # Model parameters.
 parser.add_argument('--data', type=str, default='./data',
                     help='location of the data corpus')
-parser.add_argument('--checkpoint', type=str, default='./model_storage/model.pt',
+parser.add_argument('--checkpoint', type=str, default='./model_storage/model2l.pt',
                     help='model checkpoint to use')
 parser.add_argument('--outf', type=str, default='./samples/generated_temp1.txt',
                     help='output file for generated text')
@@ -80,7 +80,7 @@ with open(args.checkpoint, 'rb') as f:
     model = torch.load(f).to(device)
 model.eval()
 
-with open(os.path.join(args.data, 'data2.json'), 'r') as fp:
+with open(os.path.join(args.data, 'data3.json'), 'r') as fp:
     data_dict = json.load(fp)
 corpus = data.LM_Dataset(data_dict)
 ntokens = len(corpus.encoder._all_subtoken_strings)
