@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser(description='PyTorch Wikitext-2 Language Model'
 # Model parameters.
 parser.add_argument('--data', type=str, default='./data',
                     help='location of the data corpus')
-parser.add_argument('--checkpoint', type=str, default='./model_storage/model2l.pt',
+parser.add_argument('--checkpoint', type=str, default='./model_storage/model-t2l4h.pt',
                     help='model checkpoint to use')
 parser.add_argument('--outf', type=str, default='./samples/generated_temp1.txt',
                     help='output file for generated text')
@@ -91,7 +91,8 @@ if not is_transformer_model:
 input = torch.randint(ntokens, (1, 1), dtype=torch.long).to(device)
 
 if args.beam > 1:
-    hidden = model.init_hidden(args.beam)
+    if not is_transformer_model:
+        hidden = model.init_hidden(args.beam)
     candidates = torch.randint(ntokens, (1, args.beam), dtype=torch.long).to(device)
     candidates_score = None
 
@@ -120,9 +121,15 @@ with open(args.outf, 'w') as outf:
                 if i % args.log_interval == 0:
                     print('| Generated {}/{} subtokens'.format(i, args.words))
             else:
-                output, hidden = model(candidates[-1,:].view(1,-1), hidden, apply_softmax= True)
-                output = output.squeeze()
-                candidates , candidates_score = beam_search_decoder(candidates, candidates_score, args.beam, output)
+                if is_transformer_model:
+                    output = model(candidates, False)
+                    output = output[-1].squeeze().div(args.temperature).exp().cpu()
+                    candidates , candidates_score = beam_search_decoder(candidates, candidates_score, args.beam, output)
+
+                else:
+                    output, hidden = model(candidates[-1,:].view(1,-1), hidden, apply_softmax= True)
+                    output = output.squeeze()
+                    candidates , candidates_score = beam_search_decoder(candidates, candidates_score, args.beam, output)
             
         if args.beam > 1:
             subtoken_ids=candidates[:,0].cpu().numpy().tolist()

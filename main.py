@@ -11,7 +11,7 @@ import data
 import model
 import json
 
-parser = argparse.ArgumentParser(description='PyTorch Wikitext-2 RNN/LSTM Language Model')
+parser = argparse.ArgumentParser(description='PyTorch brazilian literature RNN/LSTM Language Model')
 parser.add_argument('--data', type=str, default='./data',
                     help='location of the data corpus')
 parser.add_argument('--model', type=str, default='GRU',
@@ -42,7 +42,7 @@ parser.add_argument('--cuda', action='store_true',
                     help='use CUDA')
 parser.add_argument('--log-interval', type=int, default=200, metavar='N',
                     help='report interval')
-parser.add_argument('--save', type=str, default='model_storage/model2l.pt',
+parser.add_argument('--save', type=str, default='model_storage/model-t2l4h.pt',
                     help='path to save the final model')
 parser.add_argument('--onnx-export', type=str, default='',
                     help='path to export the final model in onnx format')
